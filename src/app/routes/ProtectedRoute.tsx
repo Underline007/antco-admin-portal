@@ -19,8 +19,8 @@ export const ProtectedRoute = () => {
   }
 
   if (!isAuthenticated) {
-    // Redirect to login page with return url
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+    // Redirect to auth page with return url
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   return <Outlet />;

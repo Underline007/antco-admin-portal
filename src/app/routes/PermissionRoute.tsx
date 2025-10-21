@@ -24,7 +24,7 @@ export const PermissionRoute = ({
 
   // Check if user is authenticated first
   if (!isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   // Check permission

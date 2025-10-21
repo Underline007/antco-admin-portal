@@ -11,8 +11,7 @@ import { AuthLayout } from "../layouts/AuthLayout";
 
 // Lazy load pages
 // Auth pages
-const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
-const RegisterPage = lazy(()=> import("@/features/auth/pages/RegisterPage"));
+const AuthPage = lazy(() => import("@/features/auth/pages/AuthPage"));
 const ForgotPasswordPage = lazy(
   () => import("@/features/auth/pages/ForgotPasswordPage")
 );
@@ -215,24 +214,16 @@ export const router = createBrowserRouter([
     element: <PublicRoute />,
     children: [
       {
+        index: true,
+        element: (
+          <LazyRoute>
+            <AuthPage />
+          </LazyRoute>
+        ),
+      },
+      {
         element: <AuthLayout />,
         children: [
-          {
-            path: "login",
-            element: (
-              <LazyRoute>
-                <LoginPage />
-              </LazyRoute>
-            ),
-          },
-          {
-            path: "register",
-            element: (
-              <LazyRoute>
-                <RegisterPage />
-              </LazyRoute>
-            ),
-          },
           {
             path: "forgot-password",
             element: (
