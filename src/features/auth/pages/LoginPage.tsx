@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {zodResolver} from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
@@ -45,8 +45,9 @@ const LoginPage = () => {
       await login(data);
       toast.success("Login successful!");
       navigate(from, { replace: true });
-    } catch (error: any) {
-      toast.error(error.message || "Login failed. Please try again.");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Login failed. Please try again.";
+      toast.error(message);
     }
   };
 
