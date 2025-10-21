@@ -1,23 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "../api/userApi";
-import { User, CreateUserDto, UpdateUserDto } from "../types";
-import type { PaginatedResponse } from "@/shared/api/types";
+import type { User, CreateUserDto, UpdateUserDto, UserFilters } from "../types";
 
 // Query keys factory
 export const userKeys = {
   all: ["users"] as const,
   lists: () => [...userKeys.all, "list"] as const,
-  list: (filters: any) => [...userKeys.lists(), filters] as const,
+  list: (filters: { page: number; pageSize: number } & Partial<UserFilters>) => [...userKeys.lists(), filters] as const,
   details: () => [...userKeys.all, "detail"] as const,
   detail: (id: string) => [...userKeys.details(), id] as const,
 };
 
 // Fetch users list
-export const useUsersList = (page = 1, pageSize = 10, filters?: any) => {
+export const useUsersList = (page = 1, pageSize = 10, filters?: UserFilters) => {
   return useQuery({
     queryKey: userKeys.list({ page, pageSize, ...filters }),
     queryFn: () => userApi.getUsers(page, pageSize, filters),
-    keepPreviousData: true, // Keep previous data while fetching new page
+    placeholderData : (previousData) => previousData, 
   });
 };
 
@@ -89,10 +88,13 @@ export const useUpdateUserOptimistic = () => {
       const previousUser = queryClient.getQueryData(userKeys.detail(id));
 
       // Optimistically update
-      queryClient.setQueryData(userKeys.detail(id), (old: any) => ({
-        ...old,
-        ...data,
-      }));
+      queryClient.setQueryData(userKeys.detail(id), (old: User | undefined) => {
+        if (!old) return old;
+        return {
+          ...old,
+          ...data,
+        };
+      });
 
       // Return context with snapshot
       return { previousUser };

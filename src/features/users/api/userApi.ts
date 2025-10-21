@@ -1,13 +1,13 @@
 import apiClient from "../../../shared/api/client";
 import { API_ENDPOINTS } from "../../../shared/api/endpoints";
-import { User, CreateUserDto, UpdateUserDto } from "../types";
+import { User, CreateUserDto, UpdateUserDto, UserFilters } from "../types";
 import type { PaginatedResponse } from "../../../shared/api/types";
 
 export const userApi = {
   getUsers: async (
     page: number,
     pageSize: number,
-    filters?: any
+    filters?: UserFilters
   ): Promise<PaginatedResponse<User>> => {
     const params = {
       pageNumber: page,
