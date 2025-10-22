@@ -9,7 +9,7 @@ export const AuthLayout = () => {
             <span className="text-white text-xl font-bold">A</span>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Admin Portal
+            Antco SSO Login
           </h2>
         </div>
         <Outlet />

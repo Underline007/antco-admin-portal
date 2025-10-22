@@ -1,37 +1,29 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuthStore } from "../stores/authStore";
 import { useToast } from "@/shared/stores/toastStore";
 import { cn } from "@/shared/utils/cn";
-
-// Login validation schema
-const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().optional(),
-});
-
-// Register validation schema
-const registerSchema = z
-  .object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type LoginFormData = z.infer<typeof loginSchema>;
-type RegisterFormData = z.infer<typeof registerSchema>;
+import {
+  loginSchema,
+  registerSchema,
+  type LoginFormData,
+  type RegisterFormData,
+} from "../schemas/authSchemas";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 
 const AuthPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -95,16 +87,33 @@ const AuthPage = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      // Implement Google OAuth flow
+      // window.location.href = `${API_URL}/auth/google`;
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Google login failed";
+      toast.error(message);
+  }};
+
+
   return (
     <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-auto">
       <div className="w-full max-w-6xl my-8 mx-4 sm:mx-6 lg:mx-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
-            <span className="text-white text-2xl font-bold">A</span>
+          <div className="mx-auto h-16 w-16 rounded-2xl flex items-center justify-center shadow-lg">
+            <img
+              src="svgs/logo_icon.svg"
+              alt="Antco Logo"
+              className="h-12 w-12"
+            />
           </div>
-          <h2 className="mt-6 text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Antco Admin Portal
+          <h2 className="mt-6 text-4xl font-bold text-primary">
+            Antco SSO Login
           </h2>
           <p className="mt-2 text-gray-600">
             {isLoginMode
@@ -114,7 +123,7 @@ const AuthPage = () => {
         </div>
 
         {/* Main Container */}
-        <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <Card className="relative rounded-2xl shadow-2xl overflow-hidden">
           <div className="flex min-h-[600px]">
             {/* Login Section */}
             <div
@@ -127,124 +136,145 @@ const AuthPage = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
                   Sign In
                 </h3>
-                <form
-                  className="space-y-5"
-                  onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-                >
-                  {/* Username */}
-                  <div>
-                    <label
-                      htmlFor="login-username"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Username
-                    </label>
-                    <input
-                      {...loginForm.register("username")}
-                      type="text"
-                      id="login-username"
-                      autoComplete="username"
-                      className={cn(
-                        "w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all",
-                        loginForm.formState.errors.username
-                          ? "border-red-300"
-                          : "border-gray-300"
-                      )}
-                      placeholder="Enter your username"
-                    />
-                    {loginForm.formState.errors.username && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {loginForm.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Password */}
-                  <div>
-                    <label
-                      htmlFor="login-password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        {...loginForm.register("password")}
-                        type={showPassword ? "text" : "password"}
-                        id="login-password"
-                        autoComplete="current-password"
-                        className={cn(
-                          "w-full px-4 py-3 pr-12 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all",
-                          loginForm.formState.errors.password
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        placeholder="Enter your password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-                    {loginForm.formState.errors.password && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {loginForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Remember me & Forgot password */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <input
-                        {...loginForm.register("rememberMe")}
-                        type="checkbox"
-                        id="rememberMe"
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
-                      />
-                      <label
-                        htmlFor="rememberMe"
-                        className="ml-2 block text-sm text-gray-700 cursor-pointer"
-                      >
-                        Remember me
-                      </label>
-                    </div>
-                    <button
-                      type="button"
-                      className="text-sm text-blue-600 hover:text-blue-500 font-medium"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={cn(
-                      "w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white",
-                      "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700",
-                      "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
-                      "disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                    )}
+                <Form {...loginForm}>
+                  <form
+                    className="space-y-5"
+                    onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign in"
-                    )}
-                  </button>
-                </form>
+                    {/* Username */}
+                    <FormField
+                      control={loginForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="text"
+                              autoComplete="username"
+                              placeholder="Enter your username"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Password */}
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="current-password"
+                                placeholder="Enter your password"
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remember me & Forgot password */}
+                    <div className="flex items-center justify-between">
+                      <FormField
+                        control={loginForm.control}
+                        name="rememberMe"
+                        render={({ field }) => (
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id="rememberMe"
+                              checked={field.value}
+                              onChange={field.onChange}
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                            />
+                            <Label
+                              htmlFor="rememberMe"
+                              className="ml-2 text-sm cursor-pointer"
+                            >
+                              Remember me
+                            </Label>
+                          </div>
+                        )}
+                      />
+                      <Link
+                        to="/auth/forgot-password"
+                        className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                          Signing in...
+                        </>
+                      ) : (
+                        "Sign in"
+                      )}
+                    </Button>
+
+                    {/* Divider */}
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300"></div>
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-2 bg-white text-gray-950">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Google Login Button */}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        handleGoogleLogin();
+                        toast.error("Google login not implemented yet");
+                      }}
+                      className="w-full border-2 text-white"
+                    >
+                      <img
+                        src="/svgs/google.svg"
+                        alt="Google"
+                        className="h-5 w-5 mr-2 "
+                      />
+                      Continue with Google
+                    </Button>
+                  </form>
+                </Form>
               </div>
             </div>
 
@@ -259,275 +289,230 @@ const AuthPage = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
                   Create Account
                 </h3>
-                <form
-                  className="space-y-4"
-                  onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                >
-                  {/* Name Fields */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="firstName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        First Name
-                      </label>
-                      <input
-                        {...registerForm.register("firstName")}
-                        type="text"
-                        id="firstName"
-                        className={cn(
-                          "w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                          registerForm.formState.errors.firstName
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        placeholder="John"
-                      />
-                      {registerForm.formState.errors.firstName && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {registerForm.formState.errors.firstName.message}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="lastName"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Last Name
-                      </label>
-                      <input
-                        {...registerForm.register("lastName")}
-                        type="text"
-                        id="lastName"
-                        className={cn(
-                          "w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                          registerForm.formState.errors.lastName
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        placeholder="Doe"
-                      />
-                      {registerForm.formState.errors.lastName && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {registerForm.formState.errors.lastName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Username */}
-                  <div>
-                    <label
-                      htmlFor="register-username"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Username
-                    </label>
-                    <input
-                      {...registerForm.register("username")}
-                      type="text"
-                      id="register-username"
-                      className={cn(
-                        "w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                        registerForm.formState.errors.username
-                          ? "border-red-300"
-                          : "border-gray-300"
-                      )}
-                      placeholder="johndoe"
-                    />
-                    {registerForm.formState.errors.username && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {registerForm.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Email
-                    </label>
-                    <input
-                      {...registerForm.register("email")}
-                      type="email"
-                      id="email"
-                      className={cn(
-                        "w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                        registerForm.formState.errors.email
-                          ? "border-red-300"
-                          : "border-gray-300"
-                      )}
-                      placeholder="john@example.com"
-                    />
-                    {registerForm.formState.errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {registerForm.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Password */}
-                  <div>
-                    <label
-                      htmlFor="register-password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        {...registerForm.register("password")}
-                        type={showPassword ? "text" : "password"}
-                        id="register-password"
-                        className={cn(
-                          "w-full px-4 py-3 pr-12 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                          registerForm.formState.errors.password
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        placeholder="••••••••"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-                    {registerForm.formState.errors.password && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {registerForm.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Confirm Password */}
-                  <div>
-                    <label
-                      htmlFor="confirmPassword"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Confirm Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        {...registerForm.register("confirmPassword")}
-                        type={showConfirmPassword ? "text" : "password"}
-                        id="confirmPassword"
-                        className={cn(
-                          "w-full px-4 py-3 pr-12 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all",
-                          registerForm.formState.errors.confirmPassword
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        placeholder="••••••••"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-                    {registerForm.formState.errors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {registerForm.formState.errors.confirmPassword.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={cn(
-                      "w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white",
-                      "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700",
-                      "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500",
-                      "disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                    )}
+                <Form {...registerForm}>
+                  <form
+                    className="space-y-4"
+                    onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                        Creating account...
-                      </>
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                </form>
+                    {/* Name Fields */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={registerForm.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>First Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="text"
+                                placeholder="John"
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Last Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="text" placeholder="Doe" />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Username */}
+                    <FormField
+                      control={registerForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="johnsiu"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Email */}
+                    <FormField
+                      control={registerForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="email"
+                              placeholder="abc@example.com"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Password */}
+                    <FormField
+                      control={registerForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type={showPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Confirm Password */}
+                    <FormField
+                      control={registerForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="••••••••"
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={() =>
+                                  setShowConfirmPassword(!showConfirmPassword)
+                                }
+                                className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                              >
+                                {showConfirmPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="animate-spin h-5 w-5 mr-2" />
+                          Creating account...
+                        </>
+                      ) : (
+                        "Create Account"
+                      )}
+                    </Button>
+                  </form>
+                </Form>
               </div>
             </div>
 
             {/* Sliding Overlay Panel */}
             <div
               className={cn(
-                "absolute top-0 h-full w-1/2 bg-gradient-to-br from-blue-600 to-purple-600 transition-all duration-700 ease-in-out transform",
-                isLoginMode ? "right-0 translate-x-0" : "right-1/2 translate-x-0"
+                "absolute top-0 h-full w-1/2 bg-primary transition-all duration-700 ease-in-out transform",
+                isLoginMode
+                  ? "right-0 translate-x-0"
+                  : "right-1/2 translate-x-0"
               )}
             >
-              <div className="h-full flex items-center justify-center p-12 text-white">
+              <div className="h-full flex items-center justify-center p-12 text-primary-foreground">
                 <div className="text-center max-w-md">
                   {isLoginMode ? (
                     <>
                       <h3 className="text-3xl font-bold mb-4">
                         Hello, Friend!
                       </h3>
-                      <p className="text-blue-100 mb-8">
-                        Enter your personal details and start your journey with us
+                      <p className="text-primary-foreground/90 mb-8">
+                        Enter your personal details and start your journey with
+                        us
                       </p>
-                      <button
+                      <Button
                         type="button"
+                        variant="outline"
                         onClick={() => setIsLoginMode(false)}
-                        className="px-8 py-3 border-2 border-white rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-all duration-300"
+                        className="px-8 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
                       >
                         Sign Up
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <>
-                      <h3 className="text-3xl font-bold mb-4">
-                        Welcome Back!
-                      </h3>
-                      <p className="text-blue-100 mb-8">
-                        To keep connected with us please login with your personal info
+                      <h3 className="text-3xl font-bold mb-4">Welcome Back!</h3>
+                      <p className="text-primary-foreground/90 mb-8">
+                        To keep connected with us please login with your
+                        personal info
                       </p>
-                      <button
+                      <Button
                         type="button"
+                        variant="outline"
                         onClick={() => setIsLoginMode(true)}
-                        className="px-8 py-3 border-2 border-white rounded-lg font-medium hover:bg-white hover:text-purple-600 transition-all duration-300"
+                        className="px-8 border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
                       >
                         Sign In
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600 text-sm">
-          <p>© 2024 Antco Admin Portal. All rights reserved.</p>
+          <p>© 2025 Antco SSO Login. All rights reserved.</p>
         </div>
       </div>
     </div>

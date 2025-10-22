@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import type { cn } from "@/shared/utils/cn";
+import { cn } from "@/shared/utils/cn";
 import { useAuthStore } from "@/features/auth/stores/authStore";
 import {
   LayoutDashboard,
@@ -10,6 +10,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MenuItem {
   label: string;
@@ -96,8 +97,8 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
           <div className={cn("flex items-center", !isOpen && "justify-center")}>
-            <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold">A</span>
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold">A</span>
             </div>
             {isOpen && (
               <span className="ml-3 text-xl font-semibold text-gray-800">
@@ -105,9 +106,11 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
               </span>
             )}
           </div>
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={onToggle}
-            className="hidden lg:block p-1.5 rounded-lg hover:bg-gray-100"
+            className="hidden lg:flex"
           >
             <ChevronLeft
               className={cn(
@@ -115,7 +118,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
                 !isOpen && "rotate-180"
               )}
             />
-          </button>
+          </Button>
         </div>
 
         {/* Navigation */}
@@ -131,7 +134,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
                 className={cn(
                   "flex items-center px-3 py-2 rounded-lg transition-colors",
                   isActive
-                    ? "bg-blue-50 text-blue-600"
+                    ? "bg-primary/10 text-primary"
                     : "text-gray-700 hover:bg-gray-100",
                   !isOpen && "justify-center"
                 )}
@@ -166,16 +169,17 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
           </Link>
 
           {/* Logout button */}
-          <button
+          <Button
+            variant="ghost"
             onClick={logout}
             className={cn(
-              "flex w-full items-center px-3 py-2 rounded-lg text-red-600 hover:bg-red-50",
+              "w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-600",
               !isOpen && "justify-center"
             )}
           >
             <LogOut className="h-5 w-5" />
             {isOpen && <span className="ml-3">Logout</span>}
-          </button>
+          </Button>
         </div>
       </aside>
     </>

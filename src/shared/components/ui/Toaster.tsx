@@ -7,6 +7,7 @@ import {
   InfoIcon,
   AlertTriangle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const toastIcons = {
   success: CheckCircle,
@@ -46,12 +47,14 @@ export const Toaster = () => {
                 <p className="text-sm opacity-90">{toast.message}</p>
               )}
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={() => removeToast(toast.id)}
-              className="flex-shrink-0 rounded-md p-1 hover:bg-black/10"
+              className="flex-shrink-0 h-6 w-6 hover:bg-black/10"
             >
               <X className="h-4 w-4" />
-            </button>
+            </Button>
           </div>
         );
       })}
