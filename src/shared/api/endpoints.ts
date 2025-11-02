@@ -1,37 +1,39 @@
 export const API_ENDPOINTS = {
-  // Authentication
+  // Authentication (SSO.AntCo.API - port 5000)
   AUTH: {
     LOGIN: "/auth/login",
     LOGOUT: "/auth/logout",
     REFRESH_TOKEN: "/auth/refresh-token",
-    VALIDATE_TOKEN: "/auth/validate-token",
     REGISTER: "/auth/register",
     CHANGE_PASSWORD: "/auth/change-password",
+    SEND_SMS_CODE: "/auth/send-sms-code",
+    VERIFY_SMS_CODE: "/auth/verify-sms-code",
+    ME: "/auth/me",
   },
 
-  // Users
+  // Users (SSO.AntCo.Admin.API - port 5300)
   USERS: {
-    LIST: "/users",
-    GET: (id: string) => `/users/${id}`,
-    CREATE: "/users",
-    UPDATE: (id: string) => `/users/${id}`,
-    DELETE: (id: string) => `/users/${id}`,
-    UPDATE_ROLE: (id: string) => `/users/${id}/role`,
+    LIST: "/admin/users",
+    GET: (id: string) => `/admin/users/${id}`,
+    CREATE: "/admin/users",
+    UPDATE: (id: string) => `/admin/users/${id}`,
+    DELETE: (id: string) => `/admin/users/${id}`,
+    ASSIGN_ROLES: (id: string) => `/admin/users/${id}/roles`,
   },
 
-  // Roles
+  // Roles (SSO.AntCo.Admin.API - port 5300)
   ROLES: {
-    LIST: "/roles",
-    GET: (id: string) => `/roles/${id}`,
-    CREATE: "/roles",
-    UPDATE: (id: string) => `/roles/${id}`,
-    DELETE: (id: string) => `/roles/${id}`,
-    PERMISSIONS: (id: string) => `/roles/${id}/permissions`,
+    LIST: "/admin/roles",
+    GET: (id: string) => `/admin/roles/${id}`,
+    CREATE: "/admin/roles",
+    UPDATE: (id: string) => `/admin/roles/${id}`,
+    DELETE: (id: string) => `/admin/roles/${id}`,
+    ASSIGN_PERMISSIONS: (id: string) => `/admin/roles/${id}/permissions`,
   },
 
-  // Permissions
+  // Permissions (SSO.AntCo.Admin.API - port 5300)
   PERMISSIONS: {
-    LIST: "/permissions",
-    ASSIGN: "/permissions/assign",
+    LIST: "/admin/permissions",
+    CATEGORIES: "/admin/permissions/categories",
   },
 } as const;

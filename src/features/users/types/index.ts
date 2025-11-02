@@ -1,31 +1,30 @@
 // Re-export User type from auth feature since it's shared
 export type { User } from "../../auth/types";
 
+// Create User DTO (matches backend CreateUserDto)
 export interface CreateUserDto {
-  username: string;
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  roleIds: string[];
-  isActive?: boolean;
+  phoneNumber?: string;
 }
 
+// Update User DTO (matches backend UpdateUserDto)
 export interface UpdateUserDto {
-  username?: string;
-  email?: string;
   firstName?: string;
   lastName?: string;
+  phoneNumber?: string;
   avatar?: string;
-  roleIds?: string[];
-  isActive?: boolean;
+}
+
+// Assign Roles DTO
+export interface AssignRolesDto {
+  roleIds: string[];
 }
 
 // Filters for querying users list
 export interface UserFilters {
-  search?: string;
-  roleId?: string;
-  isActive?: boolean;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  searchTerm?: string;
+  status?: "Active" | "Inactive" | "Suspended" | "PendingVerification";
 }

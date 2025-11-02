@@ -11,32 +11,45 @@ import {
 } from "../../features/auth/utils/token";
 
 // API Configuration
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://api.example.com";
+const AUTH_API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const ADMIN_API_BASE_URL =
+  import.meta.env.VITE_ADMIN_API_BASE_URL || "http://localhost:5300/api";
 const API_TIMEOUT = 30000;
 
-// Create axios instance
+// Create axios instance for Auth API
 const apiClient: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: AUTH_API_BASE_URL,
   timeout: API_TIMEOUT,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request interceptor - Add auth token
-apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const token = getAccessToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+// Create axios instance for Admin API
+const adminApiClient: AxiosInstance = axios.create({
+  baseURL: ADMIN_API_BASE_URL,
+  timeout: API_TIMEOUT,
+  headers: {
+    "Content-Type": "application/json",
   },
-  (error: AxiosError) => {
-    return Promise.reject(error);
+});
+
+// Request interceptor - Add auth token (for both clients)
+const requestInterceptor = (config: InternalAxiosRequestConfig) => {
+  const token = getAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+};
+
+const requestErrorInterceptor = (error: AxiosError) => {
+  return Promise.reject(error);
+};
+
+apiClient.interceptors.request.use(requestInterceptor, requestErrorInterceptor);
+adminApiClient.interceptors.request.use(requestInterceptor, requestErrorInterceptor);
 
 // Response interceptor - Handle token refresh
 let isRefreshing = false;
@@ -59,9 +72,9 @@ const processQueue = (
   failedQueue = [];
 };
 
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
+// Response interceptor factory - Handle token refresh
+const createResponseInterceptor = (client: AxiosInstance) => {
+  return async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
@@ -72,7 +85,7 @@ apiClient.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then(() => {
-          return apiClient(originalRequest);
+          return client(originalRequest);
         });
       }
 
@@ -86,7 +99,7 @@ apiClient.interceptors.response.use(
         }
 
         const response = await axios.post(
-          `${API_BASE_URL}/auth/refresh-token`,
+          `${AUTH_API_BASE_URL}/auth/refresh-token`,
           {
             refreshToken,
           }
@@ -96,11 +109,11 @@ apiClient.interceptors.response.use(
         setTokens(accessToken, newRefreshToken);
 
         processQueue(null, accessToken);
-        return apiClient(originalRequest);
+        return client(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError as AxiosError, null);
         clearTokens();
-        window.location.href = "/login";
+        window.location.href = "/auth";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -108,7 +121,19 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  };
+};
+
+// Apply response interceptors
+apiClient.interceptors.response.use(
+  (response) => response,
+  createResponseInterceptor(apiClient)
+);
+
+adminApiClient.interceptors.response.use(
+  (response) => response,
+  createResponseInterceptor(adminApiClient)
 );
 
 export default apiClient;
+export { adminApiClient };
