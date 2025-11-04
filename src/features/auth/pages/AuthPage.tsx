@@ -40,7 +40,7 @@ const AuthPage = () => {
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       rememberMe: false,
     },
@@ -66,7 +66,9 @@ const AuthPage = () => {
       navigate(from, { replace: true });
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "Login failed. Please try again.";
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
       toast.error(message);
     }
   };
@@ -93,12 +95,10 @@ const AuthPage = () => {
       // window.location.href = `${API_URL}/auth/google`;
     } catch (error: unknown) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Google login failed";
+        error instanceof Error ? error.message : "Google login failed";
       toast.error(message);
-  }};
-
+    }
+  };
 
   return (
     <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-auto">
@@ -144,7 +144,7 @@ const AuthPage = () => {
                     {/* Username */}
                     <FormField
                       control={loginForm.control}
-                      name="username"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Username</FormLabel>
@@ -152,7 +152,7 @@ const AuthPage = () => {
                             <Input
                               {...field}
                               type="text"
-                              autoComplete="username"
+                              autoComplete="email"
                               placeholder="Enter your username"
                             />
                           </FormControl>

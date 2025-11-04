@@ -1,15 +1,19 @@
 export interface User {
   id: string;
-  username: string;
   email: string;
   firstName: string;
   lastName: string;
+  fullName: string;
   avatar?: string;
+  phoneNumber: string;
+  status: number;
+  emailConfirmed: boolean;
+  phoneNumberConfirmed: boolean;
+  twoFactorEnabled: boolean;
+  lastLoginAt: string;
+  createdAt: string;
   roles: Role[];
   permissions: Permission[];
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Role {
@@ -28,16 +32,20 @@ export interface Permission {
 }
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
   rememberMe?: boolean;
 }
 
 export interface LoginResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
+  value: {
+    user: User;
+    accessToken: string;
+    expiresAt: string;
+    expiresIn: number;
+    refreshToken: string;
+    tokenType: string;
+  };
 }
 
 export interface AuthState {

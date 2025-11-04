@@ -54,7 +54,8 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true, error: null });
         try {
           const response = await authApi.login(credentials);
-          const { user, accessToken, refreshToken } = response;
+          console.log(response);
+          const { user, accessToken, refreshToken } = response.value;
 
           setTokens(accessToken, refreshToken);
 
@@ -82,7 +83,6 @@ export const useAuthStore = create<AuthStore>()(
         try {
           await authApi.logout();
         } catch (err) {
-          // có thể log nhẹ nếu muốn
           console.error("Logout error:", getErrorMessage(err));
         } finally {
           clearTokens();
