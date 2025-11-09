@@ -4,66 +4,83 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0a0a0f;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Border radius */
-  --radius: 0.625rem;
+  /* Border radius - Modern, softer */
+  --radius: 1rem;
 
-  /* Base colors */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  /* AI-Inspired Gradients - Blue Theme #1851c1 */
+  --gradient-primary: linear-gradient(135deg, #1851c1 0%, #0f3d99 100%);
+  --gradient-secondary: linear-gradient(135deg, #2563eb 0%, #1851c1 100%);
+  --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(24, 81, 193, 0.1), rgba(24, 81, 193, 0.05));
 
-  /* Primary color - Blue (blue-600: #2563eb) */
-  --primary: oklch(0.533 0.175 264.5);
-  --primary-foreground: oklch(1 0 0);
+  /* Base colors - Modern palette */
+  --background: #fafbfc;
+  --foreground: #1a1d29;
+  --card: #ffffff;
+  --card-foreground: #1a1d29;
+  --popover: #ffffff;
+  --popover-foreground: #1a1d29;
+
+  /* Primary color - Blue #1851c1 */
+  --primary: #1851c1;
+  --primary-hover: #0f3d99;
+  --primary-foreground: #ffffff;
 
   /* Secondary colors */
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: #f3f4f6;
+  --secondary-foreground: #374151;
+  --muted: #f9fafb;
+  --muted-foreground: #6b7280;
+  --accent: #e0e7ff;
+  --accent-foreground: #4338ca;
 
-  /* Destructive color - Red */
-  --destructive: oklch(0.577 0.245 27.325);
+  /* Destructive color */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
 
   /* Border and input */
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.533 0.175 264.5);
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #667eea;
 
-  /* Chart colors */
-  --chart-1: oklch(0.533 0.175 264.5);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* Shadows - Layered, modern */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px rgba(24, 81, 193, 0.4);
 
-  /* Sidebar colors */
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.533 0.175 264.5);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.533 0.175 264.5);
+  /* Chart colors - Blue Theme */
+  --chart-1: #1851c1;
+  --chart-2: #2563eb;
+  --chart-3: #3b82f6;
+  --chart-4: #10b981;
+  --chart-5: #0ea5e9;
+
+  /* Sidebar colors - Glassmorphism */
+  --sidebar: rgba(255, 255, 255, 0.95);
+  --sidebar-foreground: #1a1d29;
+  --sidebar-primary: #1851c1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(24, 81, 193, 0.1);
+  --sidebar-accent-foreground: #1851c1;
+  --sidebar-border: rgba(229, 231, 235, 0.8);
+  --sidebar-ring: #1851c1;
 }
 
 a {
@@ -77,8 +94,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -121,10 +136,11 @@ button:focus-visible {
 }
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-2xl: calc(var(--radius) + 0.5rem);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -132,6 +148,7 @@ button:focus-visible {
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -140,6 +157,7 @@ button:focus-visible {
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -156,6 +174,27 @@ button:focus-visible {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Modern animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(24, 81, 193, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(24, 81, 193, 0.6); }
 }
 
 .dark {

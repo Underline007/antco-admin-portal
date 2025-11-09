@@ -12,10 +12,10 @@ import {
 import { Link } from 'react-router-dom';
 
 interface UserDropdownProps {
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
+  user?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
     avatar?: string;
   };
 }
@@ -23,22 +23,35 @@ interface UserDropdownProps {
 export const UserDropdown = ({ user }: UserDropdownProps) => {
   const { logout } = useAuthStore();
 
+  // Safe fallback values
+  const firstName = user?.firstName || '';
+  const lastName = user?.lastName || '';
+  const email = user?.email || '';
+  const avatar = user?.avatar;
+
+  // Get initials safely
+  const getInitials = () => {
+    const firstInitial = firstName?.[0] || '';
+    const lastInitial = lastName?.[0] || '';
+    return firstInitial && lastInitial ? `${firstInitial}${lastInitial}` : 'U';
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            {user.avatar ? (
-              <img src={user.avatar} alt="" className="h-full w-full rounded-full" />
+            {avatar ? (
+              <img src={avatar} alt="" className="h-full w-full rounded-full" />
             ) : (
               <span className="text-primary-foreground text-sm font-medium">
-                {user.firstName[0]}{user.lastName[0]}
+                {getInitials()}
               </span>
             )}
           </div>
           <div className="hidden md:block text-left">
-            <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
-            <p className="text-xs text-gray-500">{user.email}</p>
+            <p className="text-sm font-medium">{firstName} {lastName}</p>
+            <p className="text-xs text-gray-500">{email}</p>
           </div>
           <ChevronDown className="h-4 w-4" />
         </Button>

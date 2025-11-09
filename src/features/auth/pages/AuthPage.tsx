@@ -40,7 +40,7 @@ const AuthPage = () => {
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       rememberMe: false,
     },
@@ -101,7 +101,7 @@ const AuthPage = () => {
 
 
   return (
-    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-auto">
+    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2563eb] via-white to-[#1851c1] overflow-auto">
       <div className="w-full max-w-6xl my-8 mx-4 sm:mx-6 lg:mx-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -141,19 +141,19 @@ const AuthPage = () => {
                     className="space-y-5"
                     onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   >
-                    {/* Username */}
+                    {/* Email */}
                     <FormField
                       control={loginForm.control}
-                      name="username"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              type="text"
-                              autoComplete="username"
-                              placeholder="Enter your username"
+                              type="email"
+                              autoComplete="email"
+                              placeholder="Enter your email"
                             />
                           </FormControl>
                           <FormMessage />
@@ -209,7 +209,7 @@ const AuthPage = () => {
                               id="rememberMe"
                               checked={field.value}
                               onChange={field.onChange}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                              className="h-4 w-4 text-[#2563eb] focus:ring-[#3b82f6] border-gray-300 rounded cursor-pointer"
                             />
                             <Label
                               htmlFor="rememberMe"
@@ -222,7 +222,7 @@ const AuthPage = () => {
                       />
                       <Link
                         to="/auth/forgot-password"
-                        className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                        className="text-sm text-[#2563eb] hover:text-[#3b82f6] font-medium"
                       >
                         Forgot password?
                       </Link>

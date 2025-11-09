@@ -1,6 +1,7 @@
 import { adminApiClient } from "../../../shared/api/client";
 import { API_ENDPOINTS } from "../../../shared/api/endpoints";
-import { User, CreateUserDto, UpdateUserDto, UserFilters, AssignRolesDto } from "../types";
+import type { User } from "../../auth/types";
+import type { CreateUserDto, UpdateUserDto, UserFilters } from "../types";
 import type { PaginatedResponse } from "../../../shared/api/types";
 
 export const userApi = {

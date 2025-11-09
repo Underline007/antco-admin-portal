@@ -31,6 +31,21 @@ const RolesListPage = lazy(
   () => import("@/features/roles/pages/RolesListPage")
 );
 
+// Permission management
+const PermissionsListPage = lazy(
+  () => import("@/features/permissions/pages/PermissionsListPage")
+);
+
+// Profile
+const ProfilePage = lazy(
+  () => import("@/features/profile/pages/ProfilePage")
+);
+
+// Settings
+const SettingsPage = lazy(
+  () => import("@/features/settings/pages/SettingsPage")
+);
+
 // Error pages
 const NotFoundPage = lazy(() => import("@/shared/pages/NotFoundPage"));
 const UnauthorizedPage = lazy(() => import("@/shared/pages/UnauthorizedPage"));
@@ -77,6 +92,30 @@ export const router = createBrowserRouter([
             element: (
               <LazyRoute>
                 <RolesListPage />
+              </LazyRoute>
+            ),
+          },
+          {
+            path: "permissions",
+            element: (
+              <LazyRoute>
+                <PermissionsListPage />
+              </LazyRoute>
+            ),
+          },
+          {
+            path: "profile",
+            element: (
+              <LazyRoute>
+                <ProfilePage />
+              </LazyRoute>
+            ),
+          },
+          {
+            path: "settings",
+            element: (
+              <LazyRoute>
+                <SettingsPage />
               </LazyRoute>
             ),
           },

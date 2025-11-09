@@ -52,7 +52,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="fixed inset-0 min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="fixed inset-0 min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#2563eb] via-white to-[#1851c1] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Back to login link */}
         <Button
@@ -139,7 +139,7 @@ const ForgotPasswordPage = () => {
                   Remember your password?{" "}
                   <Link
                     to="/auth"
-                    className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                    className="font-medium text-[#2563eb] hover:text-[#3b82f6] transition-colors"
                   >
                     Sign in
                   </Link>
@@ -161,7 +161,7 @@ const ForgotPasswordPage = () => {
               <p className="text-sm font-medium text-gray-900 mb-6">
                 {form.getValues("email")}
               </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="bg-[#2563eb] border border-blue-200 rounded-lg p-4 mb-6">
                 <p className="text-sm text-blue-800">
                   <strong>Didn't receive the email?</strong>
                   <br />
@@ -195,7 +195,7 @@ const ForgotPasswordPage = () => {
             Need help?{" "}
             <a
               href="mailto:support@antco.com"
-              className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+              className="font-medium text-[#2563eb] hover:text-[#3b82f6] transition-colors"
             >
               Contact support
             </a>

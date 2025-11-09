@@ -1,6 +1,3 @@
-// Re-export User type from auth feature since it's shared
-export type { User } from "../../auth/types";
-
 // Create User DTO (matches backend CreateUserDto)
 export interface CreateUserDto {
   email: string;
@@ -16,11 +13,6 @@ export interface UpdateUserDto {
   lastName?: string;
   phoneNumber?: string;
   avatar?: string;
-}
-
-// Assign Roles DTO
-export interface AssignRolesDto {
-  roleIds: string[];
 }
 
 // Filters for querying users list

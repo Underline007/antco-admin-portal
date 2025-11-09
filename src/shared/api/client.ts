@@ -14,7 +14,7 @@ import {
 const AUTH_API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const ADMIN_API_BASE_URL =
-  import.meta.env.VITE_ADMIN_API_BASE_URL || "http://localhost:5300/api";
+  import.meta.env.VITE_ADMIN_API_BASE_URL || "http://localhost:5100/api";
 const API_TIMEOUT = 30000;
 
 // Create axios instance for Auth API

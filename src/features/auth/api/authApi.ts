@@ -13,6 +13,7 @@ import type {
 export const authApi = {
   // Login
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
+    debugger;
     const response = await apiClient.post(
       API_ENDPOINTS.AUTH.LOGIN,
       credentials
